@@ -1,18 +1,32 @@
 using System;
 using System.Text;
 
+/// <summary>
+/// Contains methods to process and transform input strings
+/// based on validation and character manipulation rules.
+/// </summary>
 public class Program
 {
-    // Method to cleanse and invert the input string
+    /// <summary>
+    /// Cleanses the input string by validating it, removing characters
+    /// with even ASCII values, reversing the result, and converting
+    /// characters at even positions to uppercase.
+    /// </summary>
+    /// <param name="input">
+    /// Input string that must contain only alphabets
+    /// and have a minimum length of 6 characters.
+    /// </param>
+    /// <returns>
+    /// A transformed string generated according to the rules,
+    /// or an empty string if the input is invalid.
+    /// </returns>
     public string CleanseAndInvert(string input)
     {
-        // Rule 1: Input must not be null and must have at least 6 characters
         if (string.IsNullOrEmpty(input) || input.Length < 6)
         {
             return string.Empty;
         }
 
-        // Rule 2: Input must contain only alphabets (no space, digit, or special characters)
         foreach (char ch in input)
         {
             if (!char.IsLetter(ch))
@@ -21,10 +35,8 @@ public class Program
             }
         }
 
-        // Convert input to lowercase
         input = input.ToLower();
 
-        // Remove characters with even ASCII values
         StringBuilder filtered = new StringBuilder();
         foreach (char ch in input)
         {
@@ -34,11 +46,9 @@ public class Program
             }
         }
 
-        // Reverse the filtered string
         char[] reversedArray = filtered.ToString().ToCharArray();
         Array.Reverse(reversedArray);
 
-        // Convert characters at even positions to uppercase
         for (int i = 0; i < reversedArray.Length; i++)
         {
             if (i % 2 == 0)
@@ -47,11 +57,15 @@ public class Program
             }
         }
 
-        // Return the final generated key
         return new string(reversedArray);
     }
 
-    // Main method
+    /// <summary>
+    /// Entry point of the application.
+    /// Reads input from the user, invokes the string processing method,
+    /// and displays the generated result.
+    /// </summary>
+    /// <param name="args">Command-line arguments</param>
     public static void Main(string[] args)
     {
         Program obj = new Program();
@@ -59,10 +73,8 @@ public class Program
         Console.WriteLine("Enter the word");
         string input = Console.ReadLine();
 
-        // Call the method
         string result = obj.CleanseAndInvert(input);
 
-        // Display result based on return value
         if (string.IsNullOrEmpty(result))
         {
             Console.WriteLine("Invalid Input");
