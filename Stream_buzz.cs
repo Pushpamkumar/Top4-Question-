@@ -2,34 +2,39 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-// Class to store creator statistics
+// Class to store statistics related to a content creator
 public class CreatorStats
 {
-    // Public properties as required
+    // Name of the creator
     public string CreatorName { get; set; }
+
+    // Array to store weekly likes for 4 weeks
     public double[] WeeklyLikes { get; set; }
 }
 
 public class Program
 {
-    // Engagement board to store all creators
+    // Static list to maintain all registered creators
     public static List<CreatorStats> EngagementBoard = new List<CreatorStats>();
 
-    // Method to register a creator
+    // Registers a creator record into the EngagementBoard
     public void RegisterCreator(CreatorStats record)
     {
         EngagementBoard.Add(record);
     }
 
-    // Method to get count of weeks where likes >= threshold
+    // Returns a dictionary containing creators and
+    // the count of weeks where likes are >= given threshold
     public Dictionary<string, int> GetTopPostCounts(List<CreatorStats> records, double likeThreshold)
     {
         Dictionary<string, int> result = new Dictionary<string, int>();
 
+        // Iterate through each creator
         foreach (var creator in records)
         {
             int count = 0;
 
+            // Count weeks where likes meet or exceed threshold
             foreach (double likes in creator.WeeklyLikes)
             {
                 if (likes >= likeThreshold)
@@ -38,6 +43,7 @@ public class Program
                 }
             }
 
+            // Add to result only if threshold met at least once
             if (count > 0)
             {
                 result.Add(creator.CreatorName, count);
@@ -47,12 +53,14 @@ public class Program
         return result;
     }
 
-    // Method to calculate average likes across all creators
+    // Calculates the overall average weekly likes
+    // across all registered creators
     public double CalculateAverageLikes()
     {
         double totalLikes = 0;
         int totalWeeks = 0;
 
+        // Sum all weekly likes and count total weeks
         foreach (var creator in EngagementBoard)
         {
             foreach (double likes in creator.WeeklyLikes)
@@ -62,15 +70,17 @@ public class Program
             }
         }
 
+        // Return average, avoid division by zero
         return totalWeeks > 0 ? totalLikes / totalWeeks : 0;
     }
 
-    // Main method
+    // Entry point of the application
     public static void Main(string[] args)
     {
         Program program = new Program();
         bool running = true;
 
+        // Menu-driven loop
         while (running)
         {
             Console.WriteLine("\n1. Register Creator");
@@ -84,6 +94,7 @@ public class Program
             switch (choice)
             {
                 case 1:
+                    // Register a new creator
                     CreatorStats creator = new CreatorStats();
 
                     Console.WriteLine("Enter Creator Name:");
@@ -92,6 +103,7 @@ public class Program
                     creator.WeeklyLikes = new double[4];
                     Console.WriteLine("Enter weekly likes (Week 1 to 4):");
 
+                    // Read likes for 4 weeks
                     for (int i = 0; i < 4; i++)
                     {
                         creator.WeeklyLikes[i] = Convert.ToDouble(Console.ReadLine());
@@ -102,6 +114,7 @@ public class Program
                     break;
 
                 case 2:
+                    // Display top-performing creators
                     Console.WriteLine("Enter like threshold:");
                     double threshold = Convert.ToDouble(Console.ReadLine());
 
@@ -122,16 +135,19 @@ public class Program
                     break;
 
                 case 3:
+                    // Calculate and display average likes
                     double average = program.CalculateAverageLikes();
                     Console.WriteLine("Overall average weekly likes: " + average);
                     break;
 
                 case 4:
+                    // Exit the application gracefully
                     Console.WriteLine("Logging off - Keep Creating with StreamBuzz!");
                     running = false;
                     break;
 
                 default:
+                    // Handle invalid menu option
                     Console.WriteLine("Invalid choice");
                     break;
             }
