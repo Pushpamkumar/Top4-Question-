@@ -1,33 +1,59 @@
 using System;
 
-// User-defined exception class
+/// <summary>
+/// Custom exception used to handle robot safety validation errors.
+/// </summary>
 public class RobotSafetyException : Exception
 {
-    // Constructor to pass custom error message to base Exception class
+    /// <summary>
+    /// Initializes a new instance of the RobotSafetyException class
+    /// with a specific error message.
+    /// </summary>
+    /// <param name="message">Description of the safety violation</param>
     public RobotSafetyException(string message) : base(message)
     {
     }
 }
 
-// Class that performs hazard risk analysis
+/// <summary>
+/// Performs hazard risk analysis for a robotic system
+/// based on precision, worker density, and machinery condition.
+/// </summary>
 public class RobotHazardAuditor
 {
-    // Public method as required
+    /// <summary>
+    /// Calculates the hazard risk score of a robot working environment.
+    /// </summary>
+    /// <param name="armPrecision">
+    /// Precision of the robot arm (range: 0.0 to 1.0).
+    /// Lower precision increases risk.
+    /// </param>
+    /// <param name="workerDensity">
+    /// Number of workers near the robot (range: 1 to 20).
+    /// Higher density increases risk.
+    /// </param>
+    /// <param name="machineryState">
+    /// Condition of the machinery.
+    /// Allowed values: "Worn", "Faulty", "Critical".
+    /// </param>
+    /// <returns>
+    /// A double value representing the calculated hazard risk score.
+    /// </returns>
+    /// <exception cref="RobotSafetyException">
+    /// Thrown when input values are invalid or machinery state is unsupported.
+    /// </exception>
     public double CalculateHazardRisk(double armPrecision, int workerDensity, string machineryState)
     {
-        // Validate arm precision
         if (armPrecision < 0.0 || armPrecision > 1.0)
         {
             throw new RobotSafetyException("Error: Arm precision must be 0.0-1.0");
         }
 
-        // Validate worker density
         if (workerDensity < 1 || workerDensity > 20)
         {
             throw new RobotSafetyException("Error: Worker density must be 1-20");
         }
 
-        // Determine machine risk factor
         double machineRiskFactor;
 
         if (machineryState == "Worn")
@@ -47,15 +73,21 @@ public class RobotHazardAuditor
             throw new RobotSafetyException("Error: Unsupported machinery state");
         }
 
-        // Calculate and return hazard risk score
         double hazardRisk = ((1.0 - armPrecision) * 15.0) + (workerDensity * machineRiskFactor);
         return hazardRisk;
     }
 }
 
-// Program execution starts here
+/// <summary>
+/// Entry point of the application.
+/// Handles user input and displays the calculated hazard risk score.
+/// </summary>
 public class Program
 {
+    /// <summary>
+    /// Main method that starts program execution.
+    /// </summary>
+    /// <param name="args">Command-line arguments</param>
     public static void Main(string[] args)
     {
         try
@@ -71,14 +103,12 @@ public class Program
             Console.WriteLine("Enter Machinery State (Worn/Faulty/Critical):");
             string machineryState = Console.ReadLine();
 
-            // Call the method to calculate hazard risk
             double risk = auditor.CalculateHazardRisk(armPrecision, workerDensity, machineryState);
 
             Console.WriteLine("Robot Hazard Risk Score: " + risk);
         }
         catch (RobotSafetyException ex)
         {
-            // Display exception message
             Console.WriteLine(ex.Message);
         }
     }
