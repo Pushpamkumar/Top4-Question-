@@ -2,39 +2,61 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-// Class to store statistics related to a content creator
+/// <summary>
+/// Stores engagement statistics related to a content creator,
+/// including creator name and weekly like counts.
+/// </summary>
 public class CreatorStats
 {
-    // Name of the creator
+    /// <summary>
+    /// Gets or sets the name of the content creator.
+    /// </summary>
     public string CreatorName { get; set; }
 
-    // Array to store weekly likes for 4 weeks
+    /// <summary>
+    /// Gets or sets the weekly likes for the creator (4 weeks).
+    /// </summary>
     public double[] WeeklyLikes { get; set; }
 }
 
+/// <summary>
+/// Manages creator engagement records and provides
+/// analytical operations on creator statistics.
+/// </summary>
 public class Program
 {
-    // Static list to maintain all registered creators
+    /// <summary>
+    /// Stores all registered creators and their engagement data.
+    /// </summary>
     public static List<CreatorStats> EngagementBoard = new List<CreatorStats>();
 
-    // Registers a creator record into the EngagementBoard
+    /// <summary>
+    /// Registers a new creator record into the engagement board.
+    /// </summary>
+    /// <param name="record">Creator statistics to be registered</param>
     public void RegisterCreator(CreatorStats record)
     {
         EngagementBoard.Add(record);
     }
 
-    // Returns a dictionary containing creators and
-    // the count of weeks where likes are >= given threshold
+    /// <summary>
+    /// Returns a dictionary containing creators and the number of weeks
+    /// where their likes meet or exceed the specified threshold.
+    /// </summary>
+    /// <param name="records">List of creator records to evaluate</param>
+    /// <param name="likeThreshold">Minimum number of likes required</param>
+    /// <returns>
+    /// A dictionary where the key is the creator name and the value
+    /// is the count of weeks meeting the threshold.
+    /// </returns>
     public Dictionary<string, int> GetTopPostCounts(List<CreatorStats> records, double likeThreshold)
     {
         Dictionary<string, int> result = new Dictionary<string, int>();
 
-        // Iterate through each creator
         foreach (var creator in records)
         {
             int count = 0;
 
-            // Count weeks where likes meet or exceed threshold
             foreach (double likes in creator.WeeklyLikes)
             {
                 if (likes >= likeThreshold)
@@ -43,7 +65,6 @@ public class Program
                 }
             }
 
-            // Add to result only if threshold met at least once
             if (count > 0)
             {
                 result.Add(creator.CreatorName, count);
@@ -53,14 +74,19 @@ public class Program
         return result;
     }
 
-    // Calculates the overall average weekly likes
-    // across all registered creators
+    /// <summary>
+    /// Calculates the overall average weekly likes
+    /// across all registered creators.
+    /// </summary>
+    /// <returns>
+    /// A double value representing the average weekly likes.
+    /// Returns 0 if no records are available.
+    /// </returns>
     public double CalculateAverageLikes()
     {
         double totalLikes = 0;
         int totalWeeks = 0;
 
-        // Sum all weekly likes and count total weeks
         foreach (var creator in EngagementBoard)
         {
             foreach (double likes in creator.WeeklyLikes)
@@ -70,17 +96,20 @@ public class Program
             }
         }
 
-        // Return average, avoid division by zero
         return totalWeeks > 0 ? totalLikes / totalWeeks : 0;
     }
 
-    // Entry point of the application
+    /// <summary>
+    /// Entry point of the application.
+    /// Provides a menu-driven interface for managing
+    /// and analyzing creator engagement data.
+    /// </summary>
+    /// <param name="args">Command-line arguments</param>
     public static void Main(string[] args)
     {
         Program program = new Program();
         bool running = true;
 
-        // Menu-driven loop
         while (running)
         {
             Console.WriteLine("\n1. Register Creator");
@@ -94,7 +123,6 @@ public class Program
             switch (choice)
             {
                 case 1:
-                    // Register a new creator
                     CreatorStats creator = new CreatorStats();
 
                     Console.WriteLine("Enter Creator Name:");
@@ -103,54 +131,4 @@ public class Program
                     creator.WeeklyLikes = new double[4];
                     Console.WriteLine("Enter weekly likes (Week 1 to 4):");
 
-                    // Read likes for 4 weeks
-                    for (int i = 0; i < 4; i++)
-                    {
-                        creator.WeeklyLikes[i] = Convert.ToDouble(Console.ReadLine());
-                    }
-
-                    program.RegisterCreator(creator);
-                    Console.WriteLine("Creator registered successfully");
-                    break;
-
-                case 2:
-                    // Display top-performing creators
-                    Console.WriteLine("Enter like threshold:");
-                    double threshold = Convert.ToDouble(Console.ReadLine());
-
-                    Dictionary<string, int> topPosts =
-                        program.GetTopPostCounts(EngagementBoard, threshold);
-
-                    if (topPosts.Count == 0)
-                    {
-                        Console.WriteLine("No top-performing posts this week");
-                    }
-                    else
-                    {
-                        foreach (var item in topPosts)
-                        {
-                            Console.WriteLine(item.Key + " - " + item.Value);
-                        }
-                    }
-                    break;
-
-                case 3:
-                    // Calculate and display average likes
-                    double average = program.CalculateAverageLikes();
-                    Console.WriteLine("Overall average weekly likes: " + average);
-                    break;
-
-                case 4:
-                    // Exit the application gracefully
-                    Console.WriteLine("Logging off - Keep Creating with StreamBuzz!");
-                    running = false;
-                    break;
-
-                default:
-                    // Handle invalid menu option
-                    Console.WriteLine("Invalid choice");
-                    break;
-            }
-        }
-    }
-}
+                    for (int i = 0; i
